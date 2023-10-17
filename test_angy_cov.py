@@ -1,40 +1,45 @@
 import unittest
-from Stila import stilla
-from intoExep import ErrorWithInfo
+from diametr import OperationBinTree
+from binar_tree import BinaryTree
 
 class MyTestCase(unittest.TestCase):
-    def test_min_val_in_arr(self):
-        cov = stilla(3, 3, [-1, 2, 5, 7, 1])
-        cur = cov.finaly_cal()
-        self.assertRaises(ErrorWithInfo)
+    def test_rig_lef(self):
+        root = BinaryTree(1)
+        root.left = BinaryTree(3)
+        root.right = BinaryTree(2)
+        root.right.right = BinaryTree(10)
+        root.right.right.right = BinaryTree(11)
+        root.left.left = BinaryTree(7)
+        root.left.right = BinaryTree(4)
+        root.left.left.left = BinaryTree(8)
+        root.left.right.right = BinaryTree(5)
+        root.left.left.left.left = BinaryTree(9)
+        root.left.right.right.right = BinaryTree(6)
 
-    def test_two_val_cov(self):
-        cov = stilla(3, 2, [1, 2, 5, 7, 1])
-        cur = cov.finaly_cal()
-        self.assertRaises(ErrorWithInfo)
+        op_tree = OperationBinTree(root)
+        tree_height = op_tree.find_tree_height()
 
+        self.assertEqual(tree_height, 7)
 
-    def test_two_val_N(self):
-        cov = stilla(2, 3, [1, 2, 5, 7, 1])
-        cur = cov.finaly_cal()
-        self.assertRaises(ErrorWithInfo)
+    def test_left_left (self):
+            root = BinaryTree(1)
+            root.left = BinaryTree(3)
+            root.right = BinaryTree(2)
+            root.left.left = BinaryTree(7)
+            root.left.right = BinaryTree(4)
+            root.left.left.left = BinaryTree(8)
+            root.left.right.right = BinaryTree(5)
+            root.left.left.left.left = BinaryTree(9)
+            root.left.right.right.right = BinaryTree(6)
 
-
-    def test_two_val_slot(self):
-        cov = stilla(3, 2, [7, 1])
-        cur = cov.finaly_cal()
-        self.assertRaises(ErrorWithInfo)
-
-    def test_two_val_cov(self):
-        cov = stilla(3, 2, [-1, 2, 5, 7, 1])
-        cur = cov.finaly_cal()
-        self.assertRaises(ErrorWithInfo)
-
-    def test_active(self):
-        cov = stilla(5, 3, [1, 4, 6, 3, 12, 15, 9, 22, 44, 69, 24])
-        cur = cov.finaly_cal()
-        self.assertEqual(cur, 25)
-
+            op_tree = OperationBinTree(root)
+            tree_height = op_tree.find_tree_height()
+            self.assertEqual(tree_height, 6)
+    def test_zero_tree(self):
+        root = None
+        op_tree = OperationBinTree(root)
+        tree_height = op_tree.find_tree_height()
+        self.assertEqual(tree_height, 0)
 
 
 if __name__ == '__main__':

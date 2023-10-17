@@ -8,7 +8,9 @@ class OperationBinTree:
             return 0
         left_height = self.find_height(node.left)
         right_height = self.find_height(node.right)
+
         return max(left_height, right_height) + 1
+
 
     def binary_tree_diameter(self, node):
         if node is None:
