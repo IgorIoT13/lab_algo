@@ -5,6 +5,8 @@ from  binar_tree import BinaryTree
 root = BinaryTree(1)
 root.left = BinaryTree(3)
 root.right = BinaryTree(2)
+root.right.right = BinaryTree(10)
+root.right.right.right = BinaryTree(11)
 root.left.left = BinaryTree(7)
 root.left.right = BinaryTree(4)
 root.left.left.left = BinaryTree(8)
