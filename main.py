@@ -5,16 +5,15 @@ from  binar_tree import BinaryTree
 root = BinaryTree(1)
 root.left = BinaryTree(3)
 root.right = BinaryTree(2)
-root.right.right = BinaryTree(10)
-root.right.right.right = BinaryTree(11)
 root.left.left = BinaryTree(7)
 root.left.right = BinaryTree(4)
 root.left.left.left = BinaryTree(8)
-root.left.right.right = BinaryTree(5)
 root.left.left.left.left = BinaryTree(9)
-root.left.right.right.right = BinaryTree(6)
 
 op_tree = OperationBinTree(root)
 tree_height = op_tree.find_tree_height()
-print("Висота дерева:", tree_height)
-print("Послідовність :", )
+print(f"Висота дерева: {tree_height}" )
+
+Status = op_tree.finder(root,4, 9)
+
+print(Status)
