@@ -1,25 +1,22 @@
 class BinaryTree:
-    def __init__(self, value, left=None, right=None):
+    def __init__(self, value):
         self.value = value
-        self.left = left
-        self.right = right
+        self.left = None
+        self.right = None
 
-    def find_length_to_element(self, root, target):
-        def find_path(node, target):
-            if node is None:
-                return []
-            if node.value == target:
-                return [node.value]
-            left_path = find_path(node.left, target)
-            if left_path:
-                return [node.value] + left_path
-            right_path = find_path(node.right, target)
-            if right_path:
-                return [node.value] + right_path
-            return []
+    def find_path_to_element(self, node, target):
+        if node is None:
+            return None
 
-        path = find_path(root, target)
-        if path:
-            return len(path) - 1
-        else:
-            return -1
+        if node.value == target:
+            return [node.value]  # Знайдено шлях до цільового елементу
+
+        left_path = self.find_path_to_element(node.left, target)
+        if left_path is not None:
+            return [node.value] + left_path  # Додаємо поточний вузол до шляху
+
+        right_path = self.find_path_to_element(node.right, target)
+        if right_path is not None:
+            return [node.value] + right_path  # Додаємо поточний вузол до шляху
+
+        return None  # Цільовий елемент не знайдено у піддереві
