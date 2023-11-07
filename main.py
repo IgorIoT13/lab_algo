@@ -1,73 +1,46 @@
-def lister(matrix):
-    moves = [(1, 0), (0, 1), (1, 1), (-1, 1), (-1, -1), (1, -1), (0, -1), (-1, 0)]
-    adjacency_list = {}
-    for i in range(len(matrix)):
-        for j in range(len(matrix[0])):
-            if matrix[i][j] == 1:
-                adjacency_list[(i, j)] = []
+STEP = [(1, 0), (0, 1), (1, 1), (-1, 1), (-1, -1), (1, -1), (0, -1), (-1, 0)]
 
-    for node in adjacency_list.keys():
-        x_node, y_node = node
-        for x, y in moves:
-            if 0 <= x_node + x < len(matrix) and 0 <= y_node + y < len(matrix[0]):
-                if (x_node + x, y_node + y) in adjacency_list.keys():
-                    adjacency_list[(x_node, y_node)].append((x_node + x, y_node + y))
+def get_element_around(matrix, node):
+    start_x, start_y = node
+    around = set()
+    stack = [(start_x, start_y)]
+    num_rows = len(matrix)
+    num_cols = len(matrix[0])
 
-    return adjacency_list
+    while stack:
+        x, y = stack.pop()
+        around.add((x, y))
 
+        for dx, dy in STEP:
+            ax_x, ax_y = x + dx, y + dy
+            if (0 <= ax_x < num_rows) and (0 <= ax_y < num_cols) and (ax_x, ax_y) not in around:
+                if matrix[x][y] == matrix[ax_x][ax_y]:
+                    stack.append((ax_x, ax_y))
 
-def get_neighbors(adjacency_list, node):
-    return adjacency_list[node]
-
-
-def breadth_first_search(a_list, node, visited):
-    queue = [node]
-    visited.add(node)
-
-    while queue:
-        current_node = queue.pop(0)
-        for neighbor in get_neighbors(a_list, current_node):
-            if neighbor not in visited:
-                queue.append(neighbor)
-                visited.add(neighbor)
-
-
-def ostrovi(a_list):
-    if not a_list:
-        return 0
-    visited = set()
-    count = 0
-
-    for node in a_list.keys():
-        if node not in visited:
-            breadth_first_search(a_list, node, visited)
-            count += 1
-
-    return count
-
-
-def read_matrix_from_stream(file_stream):
-    matrix = []
-    for line in file_stream:
-        matrix.append(list(map(int, line.strip().split())))
-        graph = lister(matrix)
-    return graph
-
-
-def write_result_to_stream(result, file_stream):
-    file_stream.write(str(result))
-
+    return around
 
 input_file_path = './result/input_mateix.txt'
-output_file_path = './result/output_result.txt'
+
+def paint(color, matrix, node):
+    around = get_element_around(matrix, node)
+
+    for x, y in around:
+        matrix[x][y] = color
+
+def read_matrix_from_stream(stream):
+    matrix = []
+    for line in stream:
+        matrix.append(list(map(str, line.strip().split())))
+    return matrix
 
 with open(input_file_path, 'r') as input_file:
-    graph = read_matrix_from_stream(input_file)
+    matrix = read_matrix_from_stream(input_file)
+    paint("Y", matrix, (0, 1))
 
-result = ostrovi(graph)
+# Відкрийте файл для запису
+with open(input_file_path, 'w') as output_file:
+    for row in matrix:
+        # Записати рядок у файл
+        output_file.write(' '.join(row) + '\n')
 
-with open(output_file_path, 'w') as output_file:
-    write_result_to_stream(result, output_file)
-
-print("Graph:", graph)
-print("Ostrovi :", result)
+print("File updated with modified data.")
