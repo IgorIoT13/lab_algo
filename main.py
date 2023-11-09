@@ -1,46 +1,40 @@
-STEP = [(1, 0), (0, 1), (1, 1), (-1, 1), (-1, -1), (1, -1), (0, -1), (-1, 0)]
+from collections import deque
 
-def get_element_around(matrix, node):
-    start_x, start_y = node
-    around = set()
-    stack = [(start_x, start_y)]
-    num_rows = len(matrix)
-    num_cols = len(matrix[0])
+def is_valid(x, y, N):
+    return 0 <= x < N and 0 <= y < N
 
-    while stack:
-        x, y = stack.pop()
-        around.add((x, y))
+def min_moves_knight(N, src, dest):
+    # Можливі ходи коня
+    moves = [
+        (2, 1), (1, 2),
+        (-1, 2), (-2, 1),
+        (-2, -1), (-1, -2),
+        (1, -2), (2, -1)
+    ]
 
-        for dx, dy in STEP:
-            ax_x, ax_y = x + dx, y + dy
-            if (0 <= ax_x < num_rows) and (0 <= ax_y < num_cols) and (ax_x, ax_y) not in around:
-                if matrix[x][y] == matrix[ax_x][ax_y]:
-                    stack.append((ax_x, ax_y))
+    visited = [[False for _ in range(N)] for _ in range(N)]
 
-    return around
+    queue = deque([(src[0], src[1], 0)])  # (x, y, кількість кроків)
 
-input_file_path = './result/input_mateix.txt'
+    while queue:
+        x, y, steps = queue.popleft()
 
-def paint(color, matrix, node):
-    around = get_element_around(matrix, node)
+        if x == dest[0] and y == dest[1]:
+            return steps
 
-    for x, y in around:
-        matrix[x][y] = color
+        for move in moves:
+            new_x, new_y = x + move[0], y + move[1]
 
-def read_matrix_from_stream(stream):
-    matrix = []
-    for line in stream:
-        matrix.append(list(map(str, line.strip().split())))
-    return matrix
+            if is_valid(new_x, new_y, N) and not visited[new_x][new_y]:
+                visited[new_x][new_y] = True
+                queue.append((new_x, new_y, steps + 1))
 
-with open(input_file_path, 'r') as input_file:
-    matrix = read_matrix_from_stream(input_file)
-    paint("Y", matrix, (0, 1))
+    return -1  # Якщо до кінцевої точки неможливо дістатися
 
-# Відкрийте файл для запису
-with open(input_file_path, 'w') as output_file:
-    for row in matrix:
-        # Записати рядок у файл
-        output_file.write(' '.join(row) + '\n')
+# Приклад використання
+N = 8
+src = (0, 0)
+dest = (1, 2)
 
-print("File updated with modified data.")
+result = min_moves_knight(N, src, dest)
+print(f"Мінімальна кількість кроків: {result}")
