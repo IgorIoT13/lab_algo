@@ -1,40 +1,45 @@
 from collections import deque
 
-def is_valid(x, y, N):
-    return 0 <= x < N and 0 <= y < N
+def is_valid(x, y, M, N):
+    return 0 <= x < M and 0 <= y < N
 
-def min_moves_knight(N, src, dest):
-    # Можливі ходи коня
-    moves = [
-        (2, 1), (1, 2),
-        (-1, 2), (-2, 1),
-        (-2, -1), (-1, -2),
-        (1, -2), (2, -1)
-    ]
 
-    visited = [[False for _ in range(N)] for _ in range(N)]
+def find_shortest_path(matrix, start, end):
+    M, N = len(matrix), len(matrix[0])
 
-    queue = deque([(src[0], src[1], 0)])  # (x, y, кількість кроків)
+    if matrix[start[0]][start[1]] == 0 or matrix[end[0]][end[1]] == 0:
+        return None
+
+    queue = deque([(start, 0)])
+    visited = set()
 
     while queue:
-        x, y, steps = queue.popleft()
+        (x, y), distance = queue.popleft()
+        visited.add((x, y))
 
-        if x == dest[0] and y == dest[1]:
-            return steps
+        for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+            new_x, new_y = x + dx, y + dy
 
-        for move in moves:
-            new_x, new_y = x + move[0], y + move[1]
+            if is_valid(new_x, new_y, M, N):
 
-            if is_valid(new_x, new_y, N) and not visited[new_x][new_y]:
-                visited[new_x][new_y] = True
-                queue.append((new_x, new_y, steps + 1))
+                if (new_x, new_y) == end:
+                    return distance + 1
 
-    return -1  # Якщо до кінцевої точки неможливо дістатися
+                if matrix[new_x][new_y] == 1 and (new_x, new_y) not in visited:
+                    queue.append(((new_x, new_y), distance + 1))
 
-# Приклад використання
-N = 8
-src = (0, 0)
-dest = (1, 2)
+    return None
 
-result = min_moves_knight(N, src, dest)
-print(f"Мінімальна кількість кроків: {result}")
+input_file_path = './result/input_mateix.txt'
+
+with open(input_file_path, 'r') as input_file:
+    M, N = map(int, input_file.readline().strip().split())
+    start = tuple(map(int, input_file.readline().strip().split()))
+    end = tuple(map(int, input_file.readline().strip().split()))
+    matrix = [list(map(int, input_file.readline().strip().split())) for _ in range(M)]
+
+shortest_path_length = find_shortest_path(matrix, start, end)
+if shortest_path_length is not None:
+    print(f"Найкоротший шлях: {shortest_path_length} кроків")
+else:
+    print("Шлях неможливо знайти")

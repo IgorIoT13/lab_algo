@@ -37,10 +37,8 @@ with open(input_file_path, 'r') as input_file:
     matrix = read_matrix_from_stream(input_file)
     paint("Y", matrix, (0, 1))
 
-# Відкрийте файл для запису
 with open(input_file_path, 'w') as output_file:
     for row in matrix:
-        # Записати рядок у файл
         output_file.write(' '.join(row) + '\n')
 
 print("File updated with modified data.")
