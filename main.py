@@ -1,45 +1,73 @@
-from collections import deque
+input_valuer = [
+    ['Storage_1', 'Lviv'],
+    ['Striy', 'Lviv'],
+    ['Storage_2', 'Storage_1'],
+    ['Kiyv', 'Lviv'],
+    ['Ternopil', 'Harkiv'],
+    ['Storage_3', 'Ternopil'],
+    ['Ternopil', 'Lviv']
+]
+def all_City_Storage(input):
+    result = set()
+    storage = set()
 
-def is_valid(x, y, M, N):
-    return 0 <= x < M and 0 <= y < N
+    for first, last in input:
+
+        try:
+            ins = first.index("Storage")
+            storage.add(first)
+        except:
+            result.add(first)
+
+        try:
+            ins = last.index("Storage")
+            storage.add(last)
+        except:
+            result.add(last)
 
 
-def find_shortest_path(matrix, start, end):
-    M, N = len(matrix), len(matrix[0])
 
-    if matrix[start[0]][start[1]] == 0 or matrix[end[0]][end[1]] == 0:
-        return None
+    return result, storage
 
-    queue = deque([(start, 0)])
+
+def BFS_to_Storage(graph, first_element):
+
     visited = set()
+    result_graph = set()
+    result_graph.add(first_element)
+    queue = [first_element]
 
     while queue:
-        (x, y), distance = queue.popleft()
-        visited.add((x, y))
+        now_ele = queue.pop(0)
+        for f, l in graph:
+            if f == now_ele and l not in visited:
+                queue.append(l)
+                result_graph.add(l)
 
-        for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
-            new_x, new_y = x + dx, y + dy
+        visited.add(now_ele)
 
-            if is_valid(new_x, new_y, M, N):
+    return result_graph
 
-                if (new_x, new_y) == end:
-                    return distance + 1
+def all_storage_graph(graph):
+    city, storage = all_City_Storage(graph)
 
-                if matrix[new_x][new_y] == 1 and (new_x, new_y) not in visited:
-                    queue.append(((new_x, new_y), distance + 1))
+    all_storage = []
 
-    return None
 
-input_file_path = './result/input_mateix.txt'
+    for i in storage:
+        curr_arr = []
+        curr = BFS_to_Storage(graph, i)
+        curr_arr.append(f'{i} : ')
+        for c in city:
+            if c not in curr:
+                curr_arr.append(c)
+        all_storage.append(curr_arr)
 
-with open(input_file_path, 'r') as input_file:
-    M, N = map(int, input_file.readline().strip().split())
-    start = tuple(map(int, input_file.readline().strip().split()))
-    end = tuple(map(int, input_file.readline().strip().split()))
-    matrix = [list(map(int, input_file.readline().strip().split())) for _ in range(M)]
 
-shortest_path_length = find_shortest_path(matrix, start, end)
-if shortest_path_length is not None:
-    print(f"Найкоротший шлях: {shortest_path_length} кроків")
-else:
-    print("Шлях неможливо знайти")
+    return all_storage
+
+
+
+
+
+print(all_storage_graph(input_valuer))
